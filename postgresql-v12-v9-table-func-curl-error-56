@@ -1,5 +1,5 @@
 table function error
-cURL error 56: Recv failure: Connection reset by peer (see https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
 this error was caused due to connection on DB postgres where postgres service runs on v12 but library files were of postgres v 9.2
 
 solution
