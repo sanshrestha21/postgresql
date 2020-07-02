@@ -1,0 +1,38 @@
+table function error
+cURL error 56: Recv failure: Connection reset by peer (see https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+this error was caused due to connection on DB postgres where postgres service runs on v12 but library files were of postgres v 9.2
+
+solution
+[root@pisdb pgsql]# sudo -iu postgres psql
+postgres=# CREATE OR REPLACE FUNCTION "public"."connectby"(text, text, text, text, int4)
+RETURNS SETOF "pg_catalog"."record" AS '$libdir/tablefunc', 'connectby_text'
+LANGUAGE c STABLE STRICT
+COST 1
+ROWS 1000;
+CREATE FUNCTION
+postgres=# 
+========================
+postgres=# SELECT * FROM pg_available_extensions;
+should display tablefunc--- and other extension 
+is not install it will only display  plpgsql---- 
+============recommendation======
+[root@pisdb pgsql]# yum -y install postgresql12-contrib
+[root@pisdb pgsql]# systemctl restart postgresql-12.service
+[root@pisdb pgsql]# sudo -iu postgres psql
+postgres=# CREATE OR REPLACE FUNCTION "public"."connectby"(text, text, text, text, int4)
+RETURNS SETOF "pg_catalog"."record" AS '$libdir/tablefunc', 'connectby_text'
+LANGUAGE c STABLE STRICT
+COST 1
+ROWS 1000;
+CREATE FUNCTION
+postgres=#
+=============================CAUSE====================
+postgres=# select version();
+                                                 version                                                 
+---------------------------------------------------------------------------------------------------------
+ PostgreSQL 12.3 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-39), 64-bit
+(1 row)
+===================
+[root@pisdb pgsql]# psql -V
+psql (PostgreSQL) 9.2.24
+============================================
